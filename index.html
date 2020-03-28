@@ -18,12 +18,12 @@
 
         <div class="input-group">
             <label for="minutes-input">Seconds</label>
-            <input type="number" placeholder="0" id="minutes-input" max="59" min="0" step="5">
+            <input type="number" placeholder="0" id="seconds-input" max="59" min="0" step="5">
         </div>
 
-        <button type="button" name="button" onclick="soundTimer()">Start</button>
-        <button type="button" name="button" disabled>Stop</button>
-        <button type="button" name="button" disabled>Pause</button>
+        <button type="button" name="button" id="start-button" onclick="startTimer()">Start</button>
+        <button type="button" name="button" id="stop-button" onclick="stopTimer()" disabled>Stop</button>
+        <button type="button" name="button" id="pause-button" onclick="pauseTimer()" disabled>Pause</button>
     </section>
 
     <h2><span id="minutes">0</span>: <span id="seconds">00</span></h2>
