@@ -5,7 +5,7 @@ let timerValue = {
 }
 
 function soundTimer(){
-    let amt = 3;
+    let amt = 2;
     let audio = new Audio("timer_beep.mp3");
 
     function playSound(){
@@ -22,7 +22,6 @@ function soundTimer(){
 function updateValue(key, value){
     if(value <0){
         value = 0;
-        console.log("Positive Numers Only");
     }
 
     if(key == "seconds"){
@@ -36,14 +35,10 @@ function updateValue(key, value){
     }
     $("#" + key).html(value || 0);
     timerValue[key] = value;
-
-    console.log(timerValue.minutes);
-    console.log(timerValue.seconds);
     
 }
 
 (function detectChanges(key){
-    console.log("Detect Changes");
 
     let input = "#" + key + "-input";
 
@@ -56,14 +51,40 @@ function updateValue(key, value){
 
 function startTimer(){
     buttonManager(["start", false], ["pause", true], ["stop", true])
+    freezeInput();
+
+    timerValue.timerId = setInterval(function(){
+        timerValue.seconds--;
+        if(timerValue.seconds < 0){
+            if(timerValue.minutes ==0){
+                soundTimer();
+                return stopTimer();
+            }
+            timerValue.seconds = 59;
+            timerValue.minutes--;
+        }
+
+        updateValue("minutes", timerValue.minutes);
+        updateValue("seconds", timerValue.seconds);
+    }, 1000)
+
 }
 
 function pauseTimer(){
     buttonManager(["start", true], ["pause", false], ["stop", true])
+    clearInterval(timerValue.timerId);
 }
 
-function stopTimer(){
-    buttonManager(["start", true], ["pause", false], ["stop", false])
+
+function stopTimer() {
+    clearInterval(timerValue.timerId);
+    buttonManager(["start", true], ["pause", false], ["stop", false]);
+    unFreezeInput();
+    updateValue("minutes", $("#minutes-input").val());
+    
+    let seconds = $("#seconds-input").val();
+    if(seconds < 10) { seconds = "0" + seconds; }
+    updateValue("seconds", seconds);
 }
 
 
@@ -76,4 +97,13 @@ function buttonManager(...buttonsArray){
             $(button).attr("disabled", "disabled");
         }
     }
+}
+
+function freezeInput(){
+    $("#minutes-input").attr("disabled", "disabled");
+    $("#seconds-input").attr("disabled", "disabled");
+}
+function unFreezeInput(){
+    $("#minutes-input").removeAttr("disabled");
+    $("#seconds-input").removeAttr("disabled");
 }
